@@ -21,21 +21,22 @@ void server::incomingConnection(qintptr socketDescriptor)
     qDebug() << "client connected" << socketDescriptor;
 
 //створюєм файл для відправки клієнту
-    //QFile file("test3.txt");
-    QFile file("response.txt");
-    QTextStream out(&file);
-    if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
-        out << "Hello world!";
-        out << "\r\n";
-        out << "31.03.2023";
-        file.close();
-    }
+    QFile file("testttt.7z");
+//    QFile file("response.txt");
+//    QTextStream out(&file);
+//    if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
+//        out << "Hello world!";
+//        out << "\r\n";
+//        out << "31.03.2023";
+//        file.close();
+//    }
     this->sendFileToClient(file);
 }
 
 //відправлення файла
 void server::sendFileToClient(QFile &file)
 {
+    /*
 //информация о данных, которые будут передаваться
     QByteArray arr;
     QString name_file = file.fileName();
@@ -87,6 +88,86 @@ void server::sendFileToClient(QFile &file)
    for(int i = 0; i < Sockets.size(); i++){
        Sockets[i]->disconnectFromHost();
    }
+*/
 
+
+//        // Інформація про файл, який буде передаватися
+//        QByteArray arr;
+//        QString name_file = file.fileName();
+//        qDebug() << "name_file" << name_file;
+//        QDataStream out(&arr, QIODevice::WriteOnly);
+//        out.setVersion(QDataStream::Qt_5_7);
+//        out << quint16(0) << name_file << file.size();
+//        out.device()->seek(0);
+//        out << quint16(arr.size() - sizeof(quint16));
+
+//        // Надсилання мета-даних про файл всім клієнтам
+//        for (int i = 0; i < Sockets.size(); i++) {
+//            Sockets[i]->write(arr);
+//            Sockets[i]->waitForBytesWritten();
+//        }
+
+//        // Читання та надсилання файлу блоками по 512 байт
+//        QByteArray block;
+//        if (file.open(QIODevice::ReadOnly)) {
+//            while (!file.atEnd()) {
+//                block = file.read(512);  // Читаємо блок 512 байт
+//                for (int i = 0; i < Sockets.size(); i++) {
+//                    Sockets[i]->write(block);
+//                    Sockets[i]->waitForBytesWritten();
+//                }
+//            }
+//            file.close();
+//        }
+
+//        // Повідомлення про завершення передачі файлу
+//        qDebug() << "file upload completed!";
+
+//        // Відключення клієнтів
+//        for (int i = 0; i < Sockets.size(); i++) {
+//            Sockets[i]->disconnectFromHost();
+//        }
+
+
+    // Інформація про файл, який буде передаватися
+        QByteArray arr;
+        QString name_file = file.fileName();
+        qDebug() << "name_file" << name_file;
+        QDataStream out(&arr, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_7);
+        out << quint16(0) << name_file << file.size();
+        out.device()->seek(0);
+        out << quint16(arr.size() - sizeof(quint16));
+
+        // Надсилання мета-даних про файл всім клієнтам
+        for (int i = 0; i < Sockets.size(); i++) {
+            Sockets[i]->write(arr);
+            Sockets[i]->waitForBytesWritten();
+        }
+
+        // Читання та надсилання файлу блоками по 512 байт
+        QByteArray block;
+        if (file.open(QIODevice::ReadOnly)) {
+            while (!file.atEnd()) {
+                block = file.read(512);  // Читаємо блок 512 байт
+                for (int i = 0; i < Sockets.size(); i++) {
+                    Sockets[i]->write(block);
+                    Sockets[i]->waitForBytesWritten();
+                }
+            }
+            file.close();
+        }
+
+        // Перевірка та виведення інформації про завершення передачі файлу
+        for (int i = 0; i < Sockets.size(); i++) {
+            if (Sockets[i]->bytesToWrite() == 0) {
+                qDebug() << "file upload completed! client #" << i + 1;
+            }
+        }
+
+        // Відключення клієнтів
+        for (int i = 0; i < Sockets.size(); i++) {
+            Sockets[i]->disconnectFromHost();
+        }
 }
 

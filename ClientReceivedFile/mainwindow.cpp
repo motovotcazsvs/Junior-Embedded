@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     size_information = 0;//размер информации
     total_size = 0;//счетчик байт для файла
 
-    //ui->lineEdit->setText("192.168.1.106");
+    ui->lineEdit->setText("192.168.0.108");
 
 }
 
@@ -75,7 +75,7 @@ void MainWindow::slotReadyRead()//
 
 //записываем блок данных у файл
     file->write(data_block_file);
-    file->waitForBytesWritten(30000);
+    file->waitForBytesWritten(50000);
 
     float p = float(total_size) / size_received_file;
     qDebug() << int(p * 100);
