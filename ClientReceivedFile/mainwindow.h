@@ -36,6 +36,7 @@ private:
     qint64 size_received_file;
     qint64 total_size;
     QFile *file;
+    QString currentFolder;
 };
 
 #endif // MAINWINDOW_H

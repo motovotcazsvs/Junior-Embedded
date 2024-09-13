@@ -18,6 +18,7 @@ public:
 private:
     QVector <QTcpSocket*> Sockets;
     void sendFileToClient(QFile &);
+    void sendFolderToClient(const QString &);
 
 public slots:
     void incomingConnection(qintptr socketDescriptor);
