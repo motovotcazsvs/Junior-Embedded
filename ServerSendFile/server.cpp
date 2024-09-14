@@ -30,7 +30,7 @@ void server::incomingConnection(qintptr socketDescriptor)
 //створюєм файл для відправки клієнту
     //QFile file("testtt.7z");
     //this->sendFileToClient(file);
-    this->sendFolderToClient("test");
+    this->sendFolderToClient("test7");
 }
 
 //відправлення файла
@@ -46,16 +46,12 @@ void server::sendFileToClient(QFile &file)
     QByteArray arr;
     QString name_file = file.fileName();
     qDebug() << "name_file" << name_file;
-
     // Оголошуємо тип передачі "FILE"
         QDataStream out(&arr, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_7);
         out << quint16(0) << QString("FILE") << name_file << file.size(); // Додаємо тип передачі "FILE"
         out.device()->seek(0);
         out << quint16(arr.size() - sizeof(quint16));
-
-
-
     // Надсилання мета-даних про файл всім клієнтам
     for(int i = 0; i < Sockets.size(); i++) {
         Sockets[i]->write(arr);
@@ -88,7 +84,6 @@ void server::sendFileToClient(QFile &file)
 void server::sendFolderToClient(const QString &folderPath)
 {
     QDir dir(folderPath);
-
     if (!dir.exists()) {
         qDebug() << "Directory does not exist!";
         return;
@@ -105,21 +100,22 @@ void server::sendFolderToClient(const QString &folderPath)
     out << quint16(0) << QString("START_FOLDER") << folderPath;  // Початок передачі папки
     out.device()->seek(0);
     out << quint16(arr.size() - sizeof(quint16));
-
     // Відправляємо сигнал всім клієнтам про початок передачі папки
     for (int i = 0; i < Sockets.size(); i++) {
         Sockets[i]->write(arr);
         Sockets[i]->waitForBytesWritten();
+        qDebug() << "send start folder";
     }
 
     // Відправляємо всі файли у поточній папці
-//    foreach (QString fileName, fileNames) {
-//        QFile file(dir.filePath(fileName));
-//        QFile file2("testtt.7z");
-//        this->sendFileToClient(file2);  // Використовуємо вже існуючу функцію для відправки файлу
-//    }
-    //QFile file2("testtt.7z");
-    //this->sendFileToClient(file2);  // Використовуємо вже існуючу функцію для відправки файлу
+    foreach (QString fileName, fileNames) {
+        QFile file(dir.filePath(fileName));
+        qDebug() << "foreach1";
+        //QFile file2("testtt.7z");
+        this->sendFileToClient(file);  // Використовуємо вже існуючу функцію для відправки файлу
+    }
+//    QFile file2("testtt.7z");
+//    this->sendFileToClient(file2);  // Використовуємо вже існуючу функцію для відправки файлу
 
 //    // Рекурсивно обробляємо всі вкладені папки
 //    foreach (QString folderName, folderNames) {
@@ -133,10 +129,10 @@ void server::sendFolderToClient(const QString &folderPath)
     out << quint16(0) << QString("END_FOLDER") << folderPath;  // Завершення передачі папки
     out.device()->seek(0);
     out << quint16(arr.size() - sizeof(quint16));
-
     for (int i = 0; i < Sockets.size(); i++) {
         Sockets[i]->write(arr);
         Sockets[i]->waitForBytesWritten();
+        qDebug() << "send end folder";
     }
 
     qDebug() << "Folder " << folderPath << " and all contents sent successfully!";
