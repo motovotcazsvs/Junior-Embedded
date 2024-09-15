@@ -117,11 +117,11 @@ void server::sendFolderToClient(const QString &folderPath)
 //    QFile file2("testtt.7z");
 //    this->sendFileToClient(file2);  // Використовуємо вже існуючу функцію для відправки файлу
 
-//    // Рекурсивно обробляємо всі вкладені папки
-//    foreach (QString folderName, folderNames) {
-//        QString subFolderPath = dir.filePath(folderName);
-//        sendFolderToClient(subFolderPath);  // Рекурсивно відправляємо вкладені папки
-//    }
+    // Рекурсивно обробляємо всі вкладені папки
+    foreach (QString folderName, folderNames) {
+        QString subFolderPath = dir.filePath(folderName);
+        sendFolderToClient(subFolderPath);  // Рекурсивно відправляємо вкладені папки
+    }
 
     // Відправляємо сигнал завершення передачі папки
     arr.clear();
