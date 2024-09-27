@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>182</width>
+    <width>343</width>
     <height>172</height>
    </rect>
   </property>
@@ -51,20 +51,21 @@
       </item>
      </layout>
     </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="text">
+       <string>test write</string>
+      </property>
+     </widget>
+    </item>
    </layout>
-   <zorder>lineEdit</zorder>
-   <zorder>label_3</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>pushButton_2</zorder>
-   <zorder>lineEdit</zorder>
-   <zorder>lineEdit</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>182</width>
+     <width>343</width>
      <height>21</height>
     </rect>
    </property>

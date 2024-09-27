@@ -22,6 +22,7 @@ private:
 
 public slots:
     void incomingConnection(qintptr socketDescriptor);
+    void slotReadyRead();
 
 
 

@@ -23,6 +23,8 @@ void server::incomingConnection(qintptr socketDescriptor)
         }
 
     connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
+    connect(socket, &QTcpSocket::readyRead, this, &server::slotReadyRead);
+
 
     Sockets.push_back(socket);
     qDebug() << "client connected" << socketDescriptor;
@@ -30,7 +32,7 @@ void server::incomingConnection(qintptr socketDescriptor)
 //створюєм файл для відправки клієнту
     //QFile file("testtt.7z");
     //this->sendFileToClient(file);
-    this->sendFolderToClient("test7");
+    this->sendFolderToClient("Newfolder");
 }
 
 //відправлення файла
@@ -137,5 +139,17 @@ void server::sendFolderToClient(const QString &folderPath)
 
     qDebug() << "Folder " << folderPath << " and all contents sent successfully!";
 }
+
+void server::slotReadyRead()
+{
+    socket = (QTcpSocket*)sender();
+    QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_5_7);
+    QString info;
+    in >> info;
+    qDebug() << "info" << info;
+
+}
+
 
 
