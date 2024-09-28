@@ -15,10 +15,12 @@ public:
     server();
     QTcpSocket *socket;
 
+
 private:
     QVector <QTcpSocket*> Sockets;
     void sendFileToClient(QFile &);
     void sendFolderToClient(const QString &);
+    void writeText();
 
 public slots:
     void incomingConnection(qintptr socketDescriptor);

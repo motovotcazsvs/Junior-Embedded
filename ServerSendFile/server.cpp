@@ -32,7 +32,8 @@ void server::incomingConnection(qintptr socketDescriptor)
 //створюєм файл для відправки клієнту
     //QFile file("testtt.7z");
     //this->sendFileToClient(file);
-    this->sendFolderToClient("Newfolder");
+    //this->sendFolderToClient("Newfolder");
+    //writeText();
 }
 
 //відправлення файла
@@ -145,10 +146,29 @@ void server::slotReadyRead()
     socket = (QTcpSocket*)sender();
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_7);
+    quint16 size;
     QString info;
+    in >> size;
     in >> info;
     qDebug() << "info" << info;
 
+}
+
+void server::writeText()
+{
+    QByteArray arr;
+    QDataStream out(&arr, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_7);
+    out << quint16(0) << QString("END_FOLDER");//резервуєм два байта на розмір блоку(записуючи туди нулі) та поміщаєм дані в масив
+    out.device()->seek(0);//переміщаємо вказівник на начало в масиві, тобто на зарезервовані два байта - розмір блоку
+    out << quint16(arr.size() - sizeof(quint16));//та записуєм туди фактичний розмір даних(віднявши від масива перші два байти)
+    qDebug() << arr;
+//    socket->write(arr);
+//    socket->waitForBytesWritten();
+    for(int i = 0; i < Sockets.size(); i++) {
+        Sockets[i]->write(arr);
+        Sockets[i]->waitForBytesWritten();
+    }
 }
 
 

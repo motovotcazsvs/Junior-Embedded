@@ -150,7 +150,7 @@ void MainWindow::on_pushButton_3_clicked()
     QByteArray arr;
     QDataStream out(&arr, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_7);
-    out << quint16(0) << QString("hello_client_1");//резервуєм два байта на розмір блоку(записуючи туди нулі) та поміщаєм дані в масив
+    out << quint16(0) << QString("hello_client_2");//резервуєм два байта на розмір блоку(записуючи туди нулі) та поміщаєм дані в масив
     out.device()->seek(0);//переміщаємо вказівник на начало в масиві, тобто на зарезервовані два байта - розмір блоку
     out << quint16(arr.size() - sizeof(quint16));//та записуєм туди фактичний розмір даних(віднявши від масива перші два байти)
     qDebug() << arr;
